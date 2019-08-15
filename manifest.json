@@ -10,5 +10,11 @@
         "tabs",
         "<all_urls>", 
         "storage"
+    ], 
+    "content_scripts": [
+        {
+            "matches": ["https://www.linkedin.com/jobs/saved/"],
+            "js": ["highlightAppliedJobs.js"]
+        }
     ]
 }

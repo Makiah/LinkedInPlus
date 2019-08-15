@@ -3,25 +3,36 @@ var currentUrl;
 
 var unappliedContainer = document.getElementById("unapplied");
 var appliedContainer = document.getElementById("applied");
+var markListingsButton = document.getElementById("markListings");
 
 function onWindowLoad() 
 {
     appliedContainer.style.display = "none";
     unappliedContainer.style.display = "none";
+    markListingsButton.style.display = "none";
 
-    chrome.storage.sync.get(['activeUrls'], function(result) {
+    chrome.storage.sync.get(['activeUrls'], function(result) 
+    {
         appliedUrls = result.activeUrls || [];
 
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) 
+        {
             currentUrl = tabs[0].url;
-            
-            if (appliedUrls.includes(currentUrl))
+
+            if (currentUrl === "https://www.linkedin.com/jobs/saved/")
             {
-                appliedContainer.style.display = "block";
+                markListingsButton.style.display = "block";
             }
             else
             {
-                unappliedContainer.style.display = "block";
+                if (appliedUrls.includes(currentUrl))
+                {
+                    appliedContainer.style.display = "block";
+                }
+                else
+                {
+                    unappliedContainer.style.display = "block";
+                }
             }
         });
     });
@@ -67,5 +78,17 @@ function markUnapplied()
     }
 }
 
+function markListings() 
+{
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) 
+    {
+        chrome.tabs.sendMessage(tabs[0].id, 
+        {
+            action: "updatelisting"
+        });
+    });
+}
+
 document.getElementById("markUnapplied").addEventListener("click", markUnapplied);
 document.getElementById("markApplied").addEventListener("click", markApplied);
+markListingsButton.addEventListener("click", markListings);
