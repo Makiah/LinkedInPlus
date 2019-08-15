@@ -9,12 +9,17 @@
     "permissions": [
         "tabs",
         "<all_urls>", 
-        "storage"
+        "storage", 
+        "webNavigation"
     ], 
     "content_scripts": [
         {
-            "matches": ["https://www.linkedin.com/jobs/saved/"],
-            "js": ["highlightAppliedJobs.js"]
+            "matches": ["https://www.linkedin.com/*"],
+            "js": ["contentScript.js"]
         }
-    ]
+    ], 
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
 }
