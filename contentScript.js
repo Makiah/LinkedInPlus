@@ -30,6 +30,24 @@ function updateListings()
             var url = liItem.children[0].href;
             var fixedUrl = url.substring(0, url.lastIndexOf('/') + 1);
 
+            // Should just have two without button
+            if (liItem.children.length < 3)
+            {
+                var button = document.createElement('input');
+                button.type = "button";
+                button.name = "name";
+                button.value = "value";
+                button.id = "id";
+                button.onclick = function() 
+                {
+                    chrome.storage.sync.get(['activeUrls'], function(result) 
+                    {
+                        appliedUrls = result.activeUrls || [];
+                    });
+                }
+                liItem.appendChild(button);
+            }
+
             if (appliedUrls.includes(fixedUrl))
                 liItem.style["background-color"] = "green";
         }

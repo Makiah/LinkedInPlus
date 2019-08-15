@@ -1,4 +1,3 @@
-var appliedUrls = []; 
 var currentUrl;
 
 var unappliedContainer = document.getElementById("unapplied");
@@ -11,7 +10,7 @@ function onWindowLoad()
 
     chrome.storage.sync.get(['activeUrls'], function(result) 
     {
-        appliedUrls = result.activeUrls || [];
+        var appliedUrls = result.activeUrls || [];
 
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) 
         {
@@ -33,40 +32,52 @@ window.onload = onWindowLoad;
 
 function markApplied() 
 {
-    var index = appliedUrls.indexOf(currentUrl);
-    appliedContainer.style.display = "block";
-    unappliedContainer.style.display = "none";
+    console.log("markApplied()");
 
-    if (index == -1)
+    chrome.storage.sync.get(['activeUrls'], function(result) 
     {
-        appliedUrls.push(currentUrl);
+        var appliedUrls = result.activeUrls || [];
 
-        chrome.storage.sync.set({activeUrls: appliedUrls});
-    }
-    else 
-    {
-        console.error(currentUrl + " was already in appliedUrls but markApplied() was called!");
-    }
+        var index = appliedUrls.indexOf(currentUrl);
+        appliedContainer.style.display = "block";
+        unappliedContainer.style.display = "none";
+    
+        if (index == -1)
+        {
+            appliedUrls.push(currentUrl);
+    
+            chrome.storage.sync.set({activeUrls: appliedUrls});
+        }
+        else 
+        {
+            console.error(currentUrl + " was already in appliedUrls but markApplied() was called!");
+        }
+    });
 }
 
 function markUnapplied() 
 {
     console.log("markUnapplied()");
 
-    var index = appliedUrls.indexOf(currentUrl);
-    appliedContainer.style.display = "none";
-    unappliedContainer.style.display = "block";
-
-    if (index > -1)
+    chrome.storage.sync.get(['activeUrls'], function(result) 
     {
-        appliedUrls.splice(index, 1);
+        var appliedUrls = result.activeUrls || [];
 
-        chrome.storage.sync.set({activeUrls: appliedUrls});
-    }
-    else
-    {
-        console.error(currentUrl + " was not found in appliedUrls but markUnapplied() was called!");
-    }
+        var index = appliedUrls.indexOf(currentUrl);
+        appliedContainer.style.display = "none";
+        unappliedContainer.style.display = "block";
+
+        if (index > -1)
+        {
+            appliedUrls.splice(index, 1);
+
+            chrome.storage.sync.set({activeUrls: appliedUrls});
+        }
+        else
+        {
+            console.error(currentUrl + " was not found in appliedUrls but markUnapplied() was called!");
+        }
+    });
 }
 
 document.getElementById("markUnapplied").addEventListener("click", markUnapplied);
