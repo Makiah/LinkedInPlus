@@ -3,13 +3,11 @@ var currentUrl;
 
 var unappliedContainer = document.getElementById("unapplied");
 var appliedContainer = document.getElementById("applied");
-var markListingsButton = document.getElementById("markListings");
 
 function onWindowLoad() 
 {
     appliedContainer.style.display = "none";
     unappliedContainer.style.display = "none";
-    markListingsButton.style.display = "none";
 
     chrome.storage.sync.get(['activeUrls'], function(result) 
     {
@@ -18,21 +16,14 @@ function onWindowLoad()
         chrome.tabs.query({active: true, currentWindow: true}, function (tabs) 
         {
             currentUrl = tabs[0].url;
-
-            if (currentUrl === "https://www.linkedin.com/jobs/saved/")
+            
+            if (appliedUrls.includes(currentUrl))
             {
-                markListingsButton.style.display = "block";
+                appliedContainer.style.display = "block";
             }
             else
             {
-                if (appliedUrls.includes(currentUrl))
-                {
-                    appliedContainer.style.display = "block";
-                }
-                else
-                {
-                    unappliedContainer.style.display = "block";
-                }
+                unappliedContainer.style.display = "block";
             }
         });
     });
@@ -78,17 +69,5 @@ function markUnapplied()
     }
 }
 
-function markListings() 
-{
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) 
-    {
-        chrome.tabs.sendMessage(tabs[0].id, 
-        {
-            action: "updatelisting"
-        });
-    });
-}
-
 document.getElementById("markUnapplied").addEventListener("click", markUnapplied);
 document.getElementById("markApplied").addEventListener("click", markApplied);
-markListingsButton.addEventListener("click", markListings);
