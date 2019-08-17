@@ -80,5 +80,12 @@ function markUnapplied()
     });
 }
 
+function openBackground()
+{
+    chrome.tabs.create({url: 'applicationsview.html'});
+}
+
+document.getElementById("openBackground").addEventListener("click", openBackground);
+
 document.getElementById("markUnapplied").addEventListener("click", markUnapplied);
 document.getElementById("markApplied").addEventListener("click", markApplied);
