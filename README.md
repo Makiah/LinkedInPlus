@@ -1,2 +1,7 @@
-# CoOpSearch
-Helps me keep track of which positions I've applied for and such
+# LinkedInPlus
+
+Keep track of what you've already applied for in a Chrome extension.  
+
+![Dashboard](images/newdashboard.png)
+
+![Popup](images/extension.png)
