@@ -7,7 +7,7 @@ function updateListings()
     chrome.storage.sync.get(['activeUrls'], function(result) 
     {
         var appliedUrls = result.activeUrls || [];
-        var ulItem = document.getElementsByClassName("jobs-saved-jobs__list")[0];
+        var ulItem = document.getElementsByClassName("core-rail")[1];
 
         if (observer == null)
         {
@@ -24,11 +24,17 @@ function updateListings()
         }
 
         // Go through and highlight picked ones
-        for (var i = 0; i < ulItem.children.length; i++)
+        console.log("UL Item: ", ulItem);
+        for (var i = 1 /* skip heading */; i < ulItem.children.length; i++)
         {
             var liItem = ulItem.children[i];
-            var url = liItem.children[0].href;
+            console.log("LI item: ", liItem);
+            var linkHeading = liItem.children[0].children[0].children[1].children[0].children[0];
+            console.log("Link heading", linkHeading);
+            var url = linkHeading.href;
+            console.log("Job link: ", url);
             var fixedUrl = url.substring(0, url.lastIndexOf('/') + 1);
+            console.log("Fixed", fixedUrl);
 
             var alreadyApplied = appliedUrls.includes(fixedUrl);
             if (alreadyApplied)
@@ -37,7 +43,7 @@ function updateListings()
                 liItem.style["background-color"] = "initial";
 
             // Should just have two without button
-            if (liItem.children.length < 3)
+            if (liItem.children.length < 2)
             {
                 var button = document.createElement('input');
                 button.type = "button";
@@ -103,7 +109,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 function loadFunction() 
 {
     console.log(window.location.href);
-    if (window.location.href === "https://www.linkedin.com/jobs/saved/")
+    if (window.location.href === "https://www.linkedin.com/jobs/tracker/saved/")
     {
         setTimeout(() => {updateListings()}, 500);
     }
